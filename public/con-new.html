@@ -1,0 +1,106 @@
+
+<!doctype html>
+<html lang="en" class="h-100">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>RailChain - Proof Request Demonstration</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="d-flex flex-column h-100">
+  <script src="js/helper.js"></script>
+    
+  <header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Use Case 3 - Maintenance</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+          <ul class="navbar-nav me-auto mb-2 mb-md-0">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="/run">Run Demonstration</a>
+              </li>                    
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  Device Connections
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                  <li><a class="dropdown-item" href="/con-all">List all connections</a></li>
+                  <li><a class="dropdown-item" href="/con-new">Create new connection</a></li>
+                  <hr>
+                  <li><a class="dropdown-item" href="/con-del" style="color: red;">Delete connection</a></li>
+                </ul>
+              </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Begin page content -->
+  <main class="flex-shrink-0">
+
+    <div class="container">
+            
+      <h1 class="mt-5">Create a new connection</h1>            
+      <h6>Agent / Status : <span class="badge badge-primary">SPHERITY GmbH</span> / <span class="badge badge-success"> CONNECTED </span></h6>
+      <hr>
+
+      <form onsubmit="create_connection(); return false">
+        <div class="mb-3">
+          <label for="invitaion_link" class="form-label">Invitation Link</label>
+          <input type="text" class="form-control" id="invitaion_link" aria-describedby="invitaion_link" required="required" >
+          <div id="invitaion_link_label" class="form-text">Please insert the link to the invitation here. The connection will be automatically established</div>
+        </div>
+        <button type="submit" class="btn btn-primary">Create connection</button>
+      </form>
+
+      <br>
+
+      <div id="del_con_box" class="alert alert-success" role="alert" style="visibility: hidden;">
+        <b>✔️ Connection was successfully established...</b> ID: <span id="del_con_id"></span>
+      </div>
+
+      <div id="del_con_box_err" class="alert alert-danger" role="alert" style="visibility: hidden;">
+        <b>⚡ Failed to established a connection...</b> ID: <span id="del_con_id_err"></span>
+      </div>
+
+      <div class="card" id="last_conn" style="visibility: hidden;">
+        <div class="card-body">
+          Last created new connection ID: <a href="/con-all"><code id="last_conn_id"></code></a>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+    <!-- Begin footer content -->
+    <footer class="footer mt-auto py-3 bg-light">
+      <div class="container">                        
+        <div class="row align-items-center">
+          <div class="col">
+            <span class="text-muted">Copyright &copy; 2021 - DB Systel GmbH</span>
+          </div>
+          <div class="col">
+            <img src="img/railchain.png" width="220">
+          </div>
+          <div class="col">
+            <img src="img/konsortium.png" width="450">
+          </div>
+        </div>
+      </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
+
+</body>
+</html>
