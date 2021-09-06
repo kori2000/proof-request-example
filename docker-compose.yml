@@ -1,0 +1,12 @@
+version: '3.8'
+services:
+
+  pr-usecase:
+    container_name: pr-usecase
+    restart: always
+    build:
+      context: ./
+    env_file:
+      - .env
+    ports:
+      - 5001:5001
