@@ -573,6 +573,7 @@ function runProofRequest() {
     let pr_data = setUpPRJSON(local_st_connection, local_st_attribute, cred_def_id)
     
     updateProgressInfoBox("Received acknowledge from Ledger to proceed with selected Scheme........DONE<br>")
+    updateProgressInfoBox("Received acknowledgement from Ledger to proceed with selected Schema....DONE<br>")
     updateProgressBarValue(47)
   
     let post_data_pr = {
@@ -600,7 +601,7 @@ function runProofRequest() {
          */        
         setTimeout(function() {
 
-          updateProgressInfoBox("Proof Request successfully commited to Device. Awaiting Proof Result....DONE<br>")
+          updateProgressInfoBox("Proof Request successfully committed to Device. Awaiting Proof Result...DONE<br>")
           updateProgressBarValue(72)
           
           // WAIT 3 SECONDS, LET ACA-PY TIME TO PROCESS THE REQUEST          
