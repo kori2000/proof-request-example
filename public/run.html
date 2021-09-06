@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RailChain - Proof Request Demonstration</title>
+  <title>RailChain - Demonstration</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -16,29 +16,62 @@
     
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Use Case 3 - Maintenance</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/run">Run Demonstration</a>
-              </li>                    
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Device Connections
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <li><a class="dropdown-item" href="/con-all">List all connections</a></li>
-                  <li><a class="dropdown-item" href="/con-new">Create new connection</a></li>
-                  <hr>
-                  <li><a class="dropdown-item" href="/con-del" style="color: red;">Delete connection</a></li>
-                </ul>
-              </li>
-          </ul>
-        </div>
+      <a class="navbar-brand" href="/">
+        <span style="background-color: #fff;border-radius: 5px;padding: 3px 3px 5px 3px;"><img src="img/train.png" width="25"></span> RailChain
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0"> 
+          <li class="nav-item">
+            <button onclick="location.href ='/run'" type="button" class="btn btn-outline-success me-2" type="button">Demonstration</button>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" style="margin-left: 8px">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Device Connections
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="/con-all">List all connections</a></li>
+              <li><a class="dropdown-item" href="/con-new">Create new connection</a></li>
+              <li><a class="dropdown-item" href="/con-inv">Display Public Invitation</a></li>
+              <hr>
+              <li><a class="dropdown-item" href="/con-del" style="color: red;">Delete connection</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              SSI Webportal
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" target="_blank" href="http://52.58.73.39:9820">Siemens</a></li>
+              <li><a class="dropdown-item" target="_blank" href="http://3.122.216.190:9820">Deutsche Bahn</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Credential Viewer
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-asset.beta.de.com/credentials">DB ASSET</a></li>
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-pilot.beta.de.com/credentials">DB PILOT</a></li>
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-partner.beta.de.com/credentials">DB PARTNER</a></li>
+              <li><a class="dropdown-item" target="_blank" href="http://10.0.0.10:4201/">RAILCHAIN IoT DEVICE</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Sensor Data
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-partner-gps.ngrok.io/">IoT Device GPS</a></li>
+              <li><a class="dropdown-item" target="_blank" href="http://10.0.0.10/">Blochain Node GPS</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
       </div>
     </nav>
   </header>
@@ -48,36 +81,41 @@
 
     <div class="container">
             
-      <h1 class="mt-5">RailChain SSI Maintenance</h1>
-      <h6>Agent / Status : <span class="badge badge-primary">SPHERITY GmbH</span> / <span class="badge badge-success"> CONNECTED </span></h6>
+      <h1 class="mt-5">Maintenance Demonstration</h1>
+      <h6><span class="badge bg-light text-dark">AGENT</span><span id="agent_label" class="badge badge-info"></span>  <span class="badge bg-light text-dark">STATUS</span><span id="agent_status" class="badge badge-success"></span></h6>
       <hr>
+
+      <script>
+        getServerStatus()
+        retriveListDDLconnections()
+        sessionStorage.clear()
+      </script>
 
       <div class="card">
         <div class="card-header">
-          Schema Selection - 1/3
+          Select an active connection - 1/3
         </div>
         <div class="card-body">
-          <p class="card-text">Please select a scheme located on the <a href="https://idunion.esatus.com/home/IDunion_Test" target="_blank">ID Union Test Ledger</a></p>          
+          <p class="card-text">Please select an active available connection ID to an established agent or controller</p>
 
-          <div class="form-check">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="railchain_maintenance_auth" value="railchain_maintenance_auth" checked>
-            <label class="form-check-label" for="railchain_maintenance_auth">
-              RailChain Maintenance Authentication <span class="badge rounded-pill bg-secondary text-light">VER 1.0</span> <span class="badge rounded-pill badge-success text-light">🔒 APPROVED </span> | <span class="badge rounded-pill bg-light text-dark"><a href="https://idunion.esatus.com/tx/IDunion_Test/domain/6270" target="_blank">View on Blockchain</a></span>
-            </label>
-          </div>
-          <div class="form-check" style="padding-top: 8px;" onclick="readSchema('3VnmobY6bh1TD17TunE9D7:2:RailChain_Maintenance_Auth:1.0')">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="railchain_maintenance" value="railchain_maintenance">
-            <label class="form-check-label" for="railchain_maintenance">
-              RailChain Maintenance <span class="badge rounded-pill bg-secondary text-light">VER 1.0</span> <span class="badge rounded-pill badge-success text-light">🔒 APPROVED </span> | <span class="badge rounded-pill bg-light text-dark"><a href="https://idunion.esatus.com/tx/IDunion_Test/domain/6271" target="_blank">View on Blockchain</a></span>
-            </label>
-          </div>
-          <div class="form-check" style="padding-top: 8px;">
-            <input class="form-check-input" type="radio" name="flexRadioDefault" id="railchain_maintenance_check" value="railchain_maintenance_check" disabled>
-            <label class="form-check-label" for="railchain_maintenance_check">
-              RailChain Maintenance - Revoke Authentication <span class="badge rounded-pill bg-secondary text-light">VER 1.0</span> <span class="badge rounded-pill badge-info text-light">✍ PENDING </span> | <span class="badge rounded-pill bg-light text-dark"><a href="https://idunion.esatus.com/tx/IDunion_Test/domain/6509" target="_blank">View on Blockchain</a></span>
-            </label>
-          </div>
+          <div class="row align-items-start">
+            <div class="col">
+              <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                  Select active connection to device
+                </button>
+    
+                <!--RETRIVED CONNECTIONS-->
+                <ul id="ddl_conn_items" class="dropdown-menu" aria-labelledby="dropdownMenu2"></ul>
+    
+              </div>
 
+            </div>
+            <div class="col" style="border-left: 3px solid #ccc;min-height: 38px;">
+              <p id="selected_connection"></p>
+            </div>
+          </div>
+                    
         </div>
       </div>
 
@@ -85,26 +123,46 @@
 
       <div class="card">
         <div class="card-header">
-          Select Attributes - 2/3
+          <div class="row align-items-start">
+            <div class="col">Select a Schema from Ledger - 2/3</div>
+            <div class="col" style="text-align: right;"><a href="https://idunion.org" target="_blank"> <img src="img/logo_idunion.svg" width="72"></a></div>
+          </div>
         </div>
         <div class="card-body">
-          <p class="card-text">Please select available attributes from selected scheme.</p>
+          <p class="card-text">Please select an approved and world wide public RailChain Scheme from <a href="https://idunion.esatus.com/home/IDunion_Test" target="_blank">ID Union Test Ledger</a> </p>
 
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
-            <label class="form-check-label" for="flexSwitchCheckDefault">Default switch checkbox input</label>
-          </div>
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckChecked" checked>
-            <label class="form-check-label" for="flexSwitchCheckChecked">Checked switch checkbox input</label>
-          </div>
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDisabled" disabled>
-            <label class="form-check-label" for="flexSwitchCheckDisabled">Disabled switch checkbox input</label>
-          </div>
-          <div class="form-check form-switch">
-            <input class="form-check-input" type="checkbox" id="flexSwitchCheckCheckedDisabled" checked disabled>
-            <label class="form-check-label" for="flexSwitchCheckCheckedDisabled">Disabled checked switch checkbox input</label>
+          <div class="row align-items-start">
+            <div class="col">
+
+              <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu2" data-bs-toggle="dropdown" aria-expanded="false">
+                  RailChain SSI Schema
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                  <li><button onclick="readSchema('3VnmobY6bh1TD17TunE9D7:2:RailChain_Maintenance_Auth:1.0')" class="dropdown-item" type="button">
+                    RailChain Maintenance Authentication<span class="badge rounded-pill bg-secondary text-light">VER 1.0</span> <span class="badge rounded-pill badge-success text-light">🔒 APPROVED </span> | <span class="badge rounded-pill bg-light text-dark"><a href="https://idunion.esatus.com/tx/IDunion_Test/domain/6270" target="_blank">View on Blockchain</a></span>
+                  </button></li>
+                  <li><button onclick="readSchema('3VnmobY6bh1TD17TunE9D7:2:RailChain_Maintenance:1.0')" class="dropdown-item" type="button">
+                    RailChain Maintenance <span class="badge rounded-pill bg-secondary text-light">VER 1.0</span> <span class="badge rounded-pill badge-success text-light">🔒 APPROVED </span> | <span class="badge rounded-pill bg-light text-dark"><a href="https://idunion.esatus.com/tx/IDunion_Test/domain/6271" target="_blank">View on Blockchain</a></span>
+                  </button></li>
+                  <li><button class="dropdown-item disabled" type="button">
+                    RailChain Maintenance - Revoke Authentication <span class="badge rounded-pill bg-secondary text-light">VER 1.0</span> <span class="badge rounded-pill badge-info text-light">✍ PENDING </span> | <span class="badge rounded-pill bg-light text-dark"><a href="https://idunion.esatus.com/tx/IDunion_Test/domain/6509" target="_blank">View on Blockchain</a></span>
+                  </button></li>
+                </ul>
+              </div>
+
+            </div>
+            <div class="col" style="border-left: 3px solid #ccc;">
+
+              <!--RETRIVED ATTRIBUTES-->
+              <p id="schema_selecetd_name"></p>
+              <div id="schema_attributes"></div>
+                        
+              <div id="red_spinner" style="visibility:hidden;">
+                <div class="spinner-border text-primary" role="status"></div>
+              </div>
+
+            </div>
           </div>
 
         </div>
@@ -117,10 +175,20 @@
           Send Proof Request - 3/3
         </div>
         <div class="card-body">
-          <p class="card-text">Please select available attributes from selected scheme.</p>
-          
-          <button type="button" class="btn btn-primary">Send Proof Request</button>
+          <p id="selected_connection" class="card-text">Initialize prepared Proof Request from selected Device to Controller 🚀</p>
 
+          <div class="row align-items-start">
+            <div class="col" style="padding-bottom: 28px;">
+              <button onclick="initProofRequest()" type="button" class="btn btn-success">Send Proof Request</button>
+              <br>
+            </div>
+            <div class="col">
+              <div id="select_items_err_box" class="alert alert-danger" role="alert" style="visibility: hidden;">
+                <b>😿 Something is missing...</b>
+              </div>
+            </div>
+          </div>
+          
         </div>
       </div>
 

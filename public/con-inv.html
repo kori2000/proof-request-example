@@ -12,9 +12,8 @@
 </head>
 
 <body class="d-flex flex-column h-100">
-
   <script src="js/helper.js"></script>
-
+    
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
       <a class="navbar-brand" href="/">
@@ -82,38 +81,53 @@
 
     <div class="container">
             
-      <h1 class="mt-5">All available Connections</h1>
+      <h1 class="mt-5">Public Invitation Link</h1>            
       <h6><span class="badge bg-light text-dark">AGENT</span><span id="agent_label" class="badge badge-info"></span>  <span class="badge bg-light text-dark">STATUS</span><span id="agent_status" class="badge badge-success"></span></h6>
       <hr>
 
       <script>getServerStatus()</script>
 
-      <table class="table table-sm" id="con_table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Agent</th>
-            <th scope="col">DID</th>
-            <th scope="col">Role</th>
-            <th scope="col">Created</th>
-            <th scope="col">RFC State</th>
-            <th scope="col">State</th>
-            <th scope="col">Connection ID</th>
-            <th scope="col">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div class="card">
+        <div class="card-header">
+          Public Invitation Link
+        </div>
+        <div class="card-body">
+          
+          <div class="row align-items-start">
+            <div class="col">                            
+              <p id="selected_connection" class="card-text">It is also possible to connect via the controller. For this purpose, we generate a public invitation link and make it available to a device. <br>A new connection to our agent will be established automatically via the controller application.</p>
+              
+              <p>Public Invitation Link URL: <span style="font-weight: bold;"><a id="public_invitation_link_url" target="_blank" href=""></a></span></p>
 
-      <div id="red_spinner">
-        <div class="spinner-border text-primary" role="status"></div>
+              <script>
+                let protocol = location.protocol
+                let domain = location.hostname
+                let port = location.port
+                document.getElementById("public_invitation_link_url").innerHTML = protocol + "//" + domain + ":" + port + "/invitation"
+                document.getElementById("public_invitation_link_url").href = protocol + "//" + domain + ":" + port + "/invitation"
+              </script>
+
+              <button onclick="createInvitation()" type="button" class="btn btn-primary">Create Invitation</button>
+            </div>
+            <div class="col" style="text-align: right;">
+              <img src="img/qr_code_pilot.png" width="200" height="200" alt="QR Code Invitation">
+            </div>
+
+          </div>
+
+        </div>
       </div>
 
-    <script>
-      listDeviceConnections()
-    </script>
+      <br/>
 
+      <div class="card" id="invitation_link" style="visibility: hidden;">
+        <div class="card-body">
+          <pre id="invitaion_link_data"></pre>
+        </div>
+      </div>
+
+      <br/>
+      
     </div>
 
   </main>
@@ -134,10 +148,10 @@
         </div>
       </div>
     </footer>
-    
+
     <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
-    
+
 </body>
 </html>

@@ -17,29 +17,62 @@
     
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">Use Case 3 - Maintenance</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarCollapse">
-          <ul class="navbar-nav me-auto mb-2 mb-md-0">
-              <li class="nav-item">
-                <a class="nav-link active" aria-current="page" href="/run">Run Demonstration</a>
-              </li>                    
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Device Connections
-                </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                  <li><a class="dropdown-item" href="/con-all">List all connections</a></li>
-                  <li><a class="dropdown-item" href="/con-new">Create new connection</a></li>
-                  <hr>
-                  <li><a class="dropdown-item" href="/con-del" style="color: red;">Delete connection</a></li>
-                </ul>
-              </li>
-          </ul>
-        </div>
+      <a class="navbar-brand" href="/">
+        <span style="background-color: #fff;border-radius: 5px;padding: 3px 3px 5px 3px;"><img src="img/train.png" width="25"></span> RailChain
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav me-auto mb-2 mb-md-0"> 
+          <li class="nav-item">
+            <button onclick="location.href ='/run'" type="button" class="btn btn-outline-success me-2" type="button">Demonstration</button>
+          </li>
+        </ul>
+        <ul class="navbar-nav me-auto mb-2 mb-md-0" style="margin-left: 8px">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Device Connections
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="/con-all">List all connections</a></li>
+              <li><a class="dropdown-item" href="/con-new">Create new connection</a></li>
+              <li><a class="dropdown-item" href="/con-inv">Display Public Invitation</a></li>
+              <hr>
+              <li><a class="dropdown-item" href="/con-del" style="color: red;">Delete connection</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              SSI Webportal
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" target="_blank" href="http://52.58.73.39:9820">Siemens</a></li>
+              <li><a class="dropdown-item" target="_blank" href="http://3.122.216.190:9820">Deutsche Bahn</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Credential Viewer
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-asset.beta.de.com/credentials">DB ASSET</a></li>
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-pilot.beta.de.com/credentials">DB PILOT</a></li>
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-partner.beta.de.com/credentials">DB PARTNER</a></li>
+              <li><a class="dropdown-item" target="_blank" href="http://10.0.0.10:4201/">RAILCHAIN IoT DEVICE</a></li>
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Sensor Data
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" target="_blank" href="https://railchain-agent-partner-gps.ngrok.io/">IoT Device GPS</a></li>
+              <li><a class="dropdown-item" target="_blank" href="http://10.0.0.10/">Blochain Node GPS</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
       </div>
     </nav>
   </header>
@@ -50,8 +83,10 @@
     <div class="container">
             
       <h1 class="mt-5">Delete Connection</h1>
-      <h6>Agent / Status : <span class="badge badge-primary">SPHERITY GmbH</span> / <span class="badge badge-success"> CONNECTED </span></h6>
+      <h6><span class="badge bg-light text-dark">AGENT</span><span id="agent_label" class="badge badge-info"></span>  <span class="badge bg-light text-dark">STATUS</span><span id="agent_status" class="badge badge-success"></span></h6>
       <hr>
+
+      <script>getServerStatus()</script>
 
       <form onsubmit="delete_connection(); return false">
         <div class="mb-3">

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>RailChain - Proof Request Demonstration</title>
+  <title>RailChain - Demonstration</title>
 
   <!-- Bootstrap core CSS -->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
@@ -12,9 +12,8 @@
 </head>
 
 <body class="d-flex flex-column h-100">
-
   <script src="js/helper.js"></script>
-
+    
   <header>
     <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
       <a class="navbar-brand" href="/">
@@ -82,39 +81,67 @@
 
     <div class="container">
             
-      <h1 class="mt-5">All available Connections</h1>
+      <h1 class="mt-5">Maintenance Demonstration</h1>
       <h6><span class="badge bg-light text-dark">AGENT</span><span id="agent_label" class="badge badge-info"></span>  <span class="badge bg-light text-dark">STATUS</span><span id="agent_status" class="badge badge-success"></span></h6>
       <hr>
 
-      <script>getServerStatus()</script>
+      <script>
+        getServerStatus()
+      </script>
 
-      <table class="table table-sm" id="con_table">
-        <thead class="thead-dark">
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Agent</th>
-            <th scope="col">DID</th>
-            <th scope="col">Role</th>
-            <th scope="col">Created</th>
-            <th scope="col">RFC State</th>
-            <th scope="col">State</th>
-            <th scope="col">Connection ID</th>
-            <th scope="col">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-        </tbody>
-      </table>
+      <div class="card">
+        <div class="card-header">
+          Status Proof Request
+        </div>
+        <div class="card-body">
 
-      <div id="red_spinner">
-        <div class="spinner-border text-primary" role="status"></div>
+          <div class="progress">
+            <div id="p_bar" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 25%;" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">25%</div>
+          </div>
+          
+          <br>
+
+          <code style="font-size: 12px;" id="p_status"></code>
+          
+        </div>
       </div>
 
-    <script>
-      listDeviceConnections()
-    </script>
+      <br/>
+
+      <div id="card_result_box" class="card" style="visibility: hidden;">
+        <div class="card-header">
+          Proof Request Result
+        </div>
+        <div class="card-body">
+
+          <div class="row align-items-start">
+            <div class="col">
+              <img id="cert_result" src="img/cert_blank.png" />
+              <br>
+              <div id="maintenance_order" style="visibility: hidden;">
+                <div class="card-body">
+                  <p class="card-text">The verification has been completed successfully. Maintenance work and orders can now be transmitted to the device.</p>
+                  <a href="#" class="btn btn-primary">Maintenance Order</a>
+                </div>
+              </div>
+            </div>
+            <div class="col">
+              <p id="result_header"></p>
+              <hr>
+              <div id="result_attr"></div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+
+      <br/>
 
     </div>
+
+    <script>
+      runProofRequest()
+    </script>
 
   </main>
 
@@ -134,10 +161,10 @@
         </div>
       </div>
     </footer>
-    
+
     <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js" integrity="sha384-eMNCOe7tC1doHpGoWe/6oMVemdAVTMs2xqW4mwXrXsW0L84Iytr2wi5v2QjrP/xp" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.min.js" integrity="sha384-cn7l7gDp0eyniUwwAZgrzD06kc/tftFf19TOAs2zVinnD/C7E91j9yyk5//jjpt/" crossorigin="anonymous"></script>
-    
+
 </body>
 </html>

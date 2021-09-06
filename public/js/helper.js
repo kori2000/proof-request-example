@@ -1,4 +1,12 @@
 /**
+ * GLOBAL PARAMETERS
+ * 
+ */
+let ST_CONNECTION = ''
+let ST_SCHEMA_ID = ''
+let ST_ATTRIBUTE = []
+
+/**
  * Display Connection Table
  * @param {status} isVisible 
  */
@@ -101,7 +109,7 @@ function listDeviceConnections() {
     
     let connectionList = jsonData.results
     for (let index = 0; index < connectionList.length; index++) {
-      const element = connectionList[index];
+      const element = connectionList[index]
     
       // Add on bottom of table
       let con_row = con_table.insertRow(-1)
@@ -113,13 +121,13 @@ function listDeviceConnections() {
       cell.innerHTML = element.their_label
 
       cell = con_row.insertCell(2)
-      cell.innerHTML = `<span ${element.their_did != null ? ' class="badge bg-dark text-light"' : ''}>${element.their_did}</span>`
+      cell.innerHTML = `<span ${element.their_did != null ? ' class="badge bg-light text-dark" style="text-transform: uppercase;"' : ''}>${element.their_did}</span>`
 
       cell = con_row.insertCell(3)
       cell.innerHTML = element.their_role
       
       cell = con_row.insertCell(4)
-      cell.innerHTML = formatLocaleDate(element.created_at)
+      cell.innerHTML = `<span class="badge bg-light text-dark">${formatLocaleDate(element.created_at)}</span>`
 
       cell = con_row.insertCell(5)
       cell.innerHTML = `<i>${element.rfc23_state}</i>`
@@ -233,17 +241,429 @@ function create_connection() {
 
 }
 
-function readSchema(schemaID) {
-  
-  console.log("SCHEMA ID: ", schemaID)
-  alert("hi")
+/**
+ * Return controller cloud agent status
+ */
+function getServerStatus() {
 
+  let agent_label = document.getElementById("agent_label")
+  let agent_status = document.getElementById("agent_status")
+
+  fetch(`/status`).then( res => res.json()).then( jsonData => {
+    agent_label.innerHTML = `${jsonData.label} v${jsonData.version}`
+    agent_status.innerHTML = "CONNECTED"
+    agent_status.className = "badge badge-success"
+    // console.log(jsonData)
+  }).catch(err => {
+    agent_label.innerHTML = "NO AGENT"
+    agent_status.innerHTML = "OFFLINE"
+    agent_status.className = "badge badge-danger"
+  })
+
+}
+
+function syntaxHighlight(json) {
+  if (typeof json != 'string') {
+    json = JSON.stringify(json, undefined, '\t');
+  }
+  json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return json.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+      var cls = 'number';
+      if (/^"/.test(match)) {
+          if (/:$/.test(match)) {
+              cls = 'key';
+          } else {
+              cls = 'string';
+          }
+      } else if (/true|false/.test(match)) {
+          cls = 'boolean';
+      } else if (/null/.test(match)) {
+          cls = 'null';
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+  });
+}
+
+function createInvitation() {
+
+  let invitation_link = document.getElementById("invitation_link")
+  let invitaion_link_data = document.getElementById("invitaion_link_data")  
+
+  fetch(`/invitation`).then( res => res.json()).then( jsonData => {    
+    invitation_link.style.visibility = "visible"
+    invitaion_link_data.innerHTML = syntaxHighlight(jsonData)
+
+  }).catch(err => {
+    invitaion_link_data.innerHTML = ""
+  })
+
+}
+
+/**
+ * Helper to create html element, displaying schema attributes
+ * @param {*} _id 
+ * @param {*} schema_attribute 
+ * @returns 
+ */
+function addSchemaAttributes(_id, schema_attribute) {
+  if (schema_attribute === 'Owner_Checksum') {
+    return `<div class="form-check form-switch"><input disabled class="form-check-input" type="checkbox" id="sca_${_id}"><label class="form-check-label" for="sca_${_id}">${schema_attribute}
+    <span class="badge rounded-pill bg-secondary text-light" style="text-transform: uppercase">Prediction: Issuer is</span> <img src="/img/db_logo.png" width="30"></label></div>`
+  }
+  return `<div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="sca_${_id}" checked><label class="form-check-label" for="sca_${_id}">${schema_attribute}</label></div>`
+}
+/**
+ * Read Schema Attributes from Leder
+ * @param {*} schemaID 
+ */
+function readSchema(schemaID) {
+
+  let html_schema_attributes = document.getElementById("schema_attributes")
+  html_schema_attributes.innerHTML = ''
+  
+  let red_spinner = document.getElementById('red_spinner')  
+  red_spinner.style.visibility = "visible"
+      
   fetch(`/get-schema/${schemaID}`).then( res => res.json()).then( jsonData => {
 
     console.log(jsonData)
+        
+    let schema_attributes = jsonData.schema.attrNames
+    
+    for (let index = 0; index < schema_attributes.length; index++) {
+      const element = schema_attributes[index]
 
+      html_schema_attributes.innerHTML += addSchemaAttributes(index, element)
+    }
+
+    let schema_selecetd_name = document.getElementById("schema_selecetd_name")
+    schema_selecetd_name.innerHTML = `<span class="badge bg-info text-white" style="text-transform: uppercase">${jsonData.schema.name} Version ${jsonData.schema.ver}</span> <span class="badge rounded-pill bg-light text-dark"><a href="https://idunion.esatus.com/tx/IDunion_Test/domain/${jsonData.schema.seqNo}" target="_blank">View on Blockchain</a></span>`
+
+     // Set Global Parameter
+    ST_SCHEMA_ID = schemaID
+    
+    red_spinner.style.visibility = "hidden"
+    
   }).catch(err => {
     console.log(err)
+    red_spinner.style.visibility = "hidden"
   })
 
+}
+
+/**
+ * Set connection html value into DropDownList
+ * @param {*} sel_label 
+ * @param {*} sel_connection_id 
+ */
+function setSelectConnection(sel_label, sel_date, sel_connection_id) {
+  let selected_connection = document.getElementById("selected_connection")
+  selected_connection.innerHTML = `<span class="badge bg-info text-white" style="text-transform: uppercase">${sel_label}</span> <span class="badge bg-light text-dark">${sel_date}</span> | <a href="/con-all" target="_blank"><code>${sel_connection_id}</code></a>`
+  
+  // Set Global Parameter
+  ST_CONNECTION = sel_connection_id
+}
+
+/**
+ * Retrive active connection for proof request
+ */
+function retriveListDDLconnections() {
+
+  fetch('/connections').then( res => res.json()).then( jsonData => {
+    
+    //console.log(jsonData.results)
+
+    let ddl_conn_items = document.getElementById("ddl_conn_items")
+
+    let connectionList = jsonData.results
+    for (let index = 0; index < connectionList.length; index++) {
+      const element = connectionList[index]
+
+      if(element.state === "active") {
+        ddl_conn_items.innerHTML += `<li><button onclick="setSelectConnection('${element.their_label}', '${formatLocaleDate(element.created_at)}', '${element.connection_id}')" class="dropdown-item" type="button"><span class="badge bg-info text-white" style="text-transform: uppercase">${element.their_label}</span> <span class="badge active bg-light text-dark">${formatLocaleDate(element.created_at)}</span> <span class="badge active bg-light text-dark"><code>${element.connection_id}</code></span></button></li>`  
+      }
+
+    }
+
+  })
+
+}
+
+/**
+ * Init Proof Request - Check Parameter Settings
+ */
+function initProofRequest() {
+
+  // CHECK PARAMETER
+  if (ST_CONNECTION == '' || ST_SCHEMA_ID == '') {
+
+    let select_items_err_box = document.getElementById("select_items_err_box")
+    select_items_err_box.style.visibility = "visible"
+    fadeIn(select_items_err_box)^
+    setTimeout(function() { fadeOut(select_items_err_box) }, 3000)
+
+  } else {
+
+    //SCHEMA ATTRIBUTES
+    let schema_attributes = document.querySelector('#schema_attributes')
+    var sel_attr = schema_attributes.querySelectorAll('input[type="checkbox"]')
+    var sel_attr_label = schema_attributes.querySelectorAll('label')
+
+    for (let index = 0; index < sel_attr.length; index++) {
+      let cb = sel_attr[index]
+      let lb = sel_attr_label[index]
+      
+      if (cb.checked) {
+        ST_ATTRIBUTE.push(lb.innerHTML) 
+      }
+
+    }
+
+    sessionStorage.clear()
+    sessionStorage.setItem("ST_CONN", ST_CONNECTION)
+    sessionStorage.setItem("ST_SCHM", ST_SCHEMA_ID)
+    sessionStorage.setItem("ST_ATTR", ST_ATTRIBUTE)
+
+    console.log("SEL CONNECTION..: ", ST_CONNECTION)
+    console.log("SEL SCHEMA......: ", ST_SCHEMA_ID)
+    console.log("SEL ATTRIBUTES..: ", ST_ATTRIBUTE)
+
+    ST_CONNECTION = ''
+    ST_SCHEMA_ID = ''
+    ST_ATTRIBUTE = ''
+
+    // PARAMETER READY. PROCEED TO PROOF REQUEST
+    window.location.href = '/result'
+  }
+
+}
+
+/**
+ * Submit attributs to Proof Request Payload
+ * @param {*} single_attribute 
+ * @param {*} cred_def 
+ * @returns 
+ */
+function addReqAttribute(single_attribute, cred_def) {
+  return {
+    name: single_attribute,
+    restrictions: [
+      {
+        cred_def_id: cred_def
+      }
+    ]
+  }
+}
+
+/**
+ * Prepare JSON Payload for Proof Request
+ * @param {*} st_connection_id 
+ * @param {*} st_attributes 
+ * @param {*} cred_def 
+ * @returns 
+ */
+function setUpPRJSON(st_connection_id, st_attributes, cred_def) {
+
+  let payload_set = {
+    comment: "RailChain - Maintenance Demonstration",
+    connection_id: st_connection_id,
+      proof_request: {
+        name: "RailChain - Proof Request",
+        version: "1.0",
+        nonce: "1",
+        requested_attributes: {
+          
+        },
+      requested_predicates: {
+        Owner_Checksum: {
+          name: "Owner_Checksum",
+          p_type: "<=",
+          p_value: 999,
+          restrictions: [
+            {
+              cred_def_id: cred_def
+            }
+          ]
+        }
+      }
+    }
+  }
+
+  // ADD PROOF REQUEST ATTRIBUTES
+  for (let index = 0; index < st_attributes.length; index++) {
+    let attr = st_attributes[index]
+    payload_set.proof_request.requested_attributes[attr] = addReqAttribute(attr, cred_def)
+
+  }
+
+  return payload_set
+}
+
+function setUpCredentialDefinitionJSON(selected_schema_id) {
+  return {
+    revocation_registry_size : 1000,
+    schema_id: selected_schema_id,
+    support_revocation: false,
+    tag: "Version 1.0"
+  }
+}
+
+function updateProgressBarValue(p_value) {
+  let p_bar = document.getElementById("p_bar")
+
+  p_bar.style.width = p_value + "%"
+  p_bar.innerHTML = `${p_value}%`
+
+  if (p_value == 100) {
+    p_bar.classList.remove("progress-bar-animated")
+    p_bar.classList.add("progress-bar")
+  }
+}
+function updateProgressInfoBox(p_message) {
+  let p_status = document.getElementById("p_status")
+  p_status.innerHTML += p_message 
+}
+function prepareAttribEntry(a_label, a_value, a_proof) {
+  return `<h6><span class="badge bg-secondary text-light">${a_label}</span><span class="badge bg-light text-dark">${a_value}</span> <span class="badge bg-success"><code style="font-size:11px;color:#fff">${a_proof}</code></span></h6>`
+}
+
+/**
+ * Run Proof Request
+ */
+function runProofRequest() {
+
+  let local_st_connection = sessionStorage.getItem("ST_CONN")
+  let local_st_schema_id =  sessionStorage.getItem("ST_SCHM")
+  let local_st_attribute =  sessionStorage.getItem("ST_ATTR").split(",")
+  sessionStorage.clear()
+
+  console.log("SEL CONNECTION..: ", local_st_connection)
+  console.log("SEL SCHEMA......: ", local_st_schema_id)
+  console.log("SEL ATTRIBUTES..: ", local_st_attribute)
+  
+  updateProgressInfoBox("Preparing Parameter for Proof Request...................................DONE<br>")
+  updateProgressBarValue(22)
+
+  /**
+   * -------------------------------------------
+   *  Retrive Credential Definition
+   * -------------------------------------------
+   */
+  let post_data_cd = {
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    method: "POST",
+    body: JSON.stringify({ credential_definition_payload: setUpCredentialDefinitionJSON(local_st_schema_id) })
+  }
+  fetch(`/cred-def/`, post_data_cd).then( res => res.json()).then( jsonData => {
+    
+    // ###### Credential Definition ID ######
+    let cred_def_id = jsonData.credential_definition_id
+
+    /**
+     * -------------------------------------------
+     *  Prepeare Proof Request and await a new
+     *  Presentaion Exchange ID
+     * -------------------------------------------
+     */
+
+    // ###### Proof Request Payload ######
+    let pr_data = setUpPRJSON(local_st_connection, local_st_attribute, cred_def_id)
+    
+    updateProgressInfoBox("Received acknowledge from Ledger to proceed with selected Scheme........DONE<br>")
+    updateProgressBarValue(47)
+  
+    let post_data_pr = {
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json'
+      },
+      method: "POST",
+      body: JSON.stringify({proof_request_payload: pr_data})
+    }
+    fetch(`/proof-request/`, post_data_pr).then( res => res.json()).then( jsonData => {
+
+      // ###### Presentaion Exchange ID ######
+      let presentation_exchange_id = jsonData.presentation_exchange_id
+
+      if (presentation_exchange_id) {
+
+        updateProgressInfoBox("Sending Proof Record to Device..........................................DONE<br>")
+        updateProgressBarValue(63)
+
+        /**
+         * -------------------------------------------
+         *  Request Proof Presentation with Results
+         * -------------------------------------------
+         */        
+        setTimeout(function() {
+
+          updateProgressInfoBox("Proof Request successfully commited to Device. Awaiting Proof Result....DONE<br>")
+          updateProgressBarValue(72)
+          
+          // WAIT 3 SECONDS, LET ACA-PY TIME TO PROCESS THE REQUEST          
+          fetch(`/present-proof-record/${presentation_exchange_id}`).then( res => res.json()).then( jsonData => {
+                        
+            updateProgressInfoBox("Received Proof Record from Device.......................................DONE<br>")
+            updateProgressBarValue(100)
+
+            // Result ------------------------------------
+
+            let proof_result_state = jsonData.state
+            console.log(proof_result_state)
+
+            let cert_result = document.getElementById("cert_result")
+            let result_header = document.getElementById("result_header")
+            let result_attr = document.getElementById("result_attr")
+            let card_result_box = document.getElementById("card_result_box")
+            let maintenance_order = document.getElementById("maintenance_order")
+            
+            if (proof_result_state === 'verified') {
+              cert_result.src = "img/cert_approved.png"
+
+              let header_info = `<h5 class="card-title">Proof Request was successful</h5><p class="card-text">Request accepted, device ready for maintenance operation<hr>`
+              result_header.innerHTML = `${header_info}<span class="badge bg-info text-white" style="text-transform: uppercase">${jsonData.presentation.identifiers[0].schema_id}</span> <span class="badge rounded-pill bg-light text-dark">${jsonData.presentation.identifiers[0].cred_def_id}</span>`
+              
+              maintenance_order.style.visibility = "visible"
+
+              let revealed_attrs = jsonData.presentation.requested_proof.revealed_attrs
+  
+              for (const [key, value] of Object.entries(revealed_attrs)) {
+                console.log(`${key}: ${value.raw}`);
+                result_attr.innerHTML += prepareAttribEntry(key, value.raw, value.encoded)
+              }
+
+            } else {
+              cert_result.src = "img/cert_declined.png"
+
+              result_header.innerHTML = `<h5 class="card-title">Proof Request was not successful</h5><p class="card-text">Request declined, maintenance operation rejected from device.</p><br>🙉 Have a nice day</p>`
+
+              maintenance_order.innerHTML = ""
+            }
+
+            card_result_box.style.visibility = "visible"
+
+          })
+        }, 3000)
+      }
+
+    })
+
+  })
+
+
+  
+
+  // build proof requst json
+  // send proof request
+  // --> retrive presentation_exchange_id
+
+  // wait
+
+  // call present-proof/records/ with  presentation_exchange_id
+  // valided result
+  // display attribute result 
+  
 }

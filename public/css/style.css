@@ -20,3 +20,11 @@ main > .container {
         font-size: 3.5rem;
     }
 }
+
+#invitaion_link_data {font-size: 12px; font-family: 'Courier New', Courier, monospace;}
+pre {outline: 1px solid #ccc; padding: 5px; margin: 5px; }
+.string { color: green; }
+.number { color: darkorange; }
+.boolean { color: blue; }
+.null { color: magenta; }
+.key { color: red; }
