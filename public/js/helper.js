@@ -560,7 +560,16 @@ function runProofRequest() {
   fetch(`/cred-def/`, post_data_cd).then( res => res.json()).then( jsonData => {
     
     // ###### Credential Definition ID ######
+    /**
+     * HOTFIX: Because the credential was created with the issuer's cred def ID, 
+     * it must match exactly when requested. 
+     * You cannot use your own one for this purpose.
+     */
+
     let cred_def_id = jsonData.credential_definition_id
+    cred_def_id = "Q49cJNv53MY5tnRh855m7L:3:CL:6270:Version 1.0" // HOTFIX
+
+    console.log("CREDENTIAL DEFINITION ID..:", cred_def_id)
 
     /**
      * -------------------------------------------
@@ -572,9 +581,13 @@ function runProofRequest() {
     // ###### Proof Request Payload ######
     let pr_data = setUpPRJSON(local_st_connection, local_st_attribute, cred_def_id)
     
-    updateProgressInfoBox("Received acknowledge from Ledger to proceed with selected Scheme........DONE<br>")
     updateProgressInfoBox("Received acknowledgement from Ledger to proceed with selected Schema....DONE<br>")
     updateProgressBarValue(47)
+
+    // updateProgressInfoBox("----------------------------------------------------------------------------<br>")
+    // updateProgressInfoBox("PAYLOAD<br>")
+    // updateProgressInfoBox(`${syntaxHighlight(pr_data)}<br>`)
+    // updateProgressInfoBox("----------------------------------------------------------------------------<br>")
   
     let post_data_pr = {
       headers: {
@@ -588,6 +601,8 @@ function runProofRequest() {
 
       // ###### Presentaion Exchange ID ######
       let presentation_exchange_id = jsonData.presentation_exchange_id
+
+      console.log("PRESENTATION EXCHANGE ID..:", presentation_exchange_id)
 
       if (presentation_exchange_id) {
 
@@ -606,6 +621,9 @@ function runProofRequest() {
           
           // WAIT 3 SECONDS, LET ACA-PY TIME TO PROCESS THE REQUEST          
           fetch(`/present-proof-record/${presentation_exchange_id}`).then( res => res.json()).then( jsonData => {
+
+            jsonData
+            console.log("PROOF RECORD..............:", jsonData.state)
                         
             updateProgressInfoBox("Received Proof Record from Device.......................................DONE<br>")
             updateProgressBarValue(100)
@@ -653,18 +671,5 @@ function runProofRequest() {
     })
 
   })
-
-
-  
-
-  // build proof requst json
-  // send proof request
-  // --> retrive presentation_exchange_id
-
-  // wait
-
-  // call present-proof/records/ with  presentation_exchange_id
-  // valided result
-  // display attribute result 
   
 }
