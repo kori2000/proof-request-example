@@ -4,6 +4,7 @@
  */
 let ST_CONNECTION = ''
 let ST_SCHEMA_ID = ''
+let ST_CRED_DEF_ID = ''
 let ST_ATTRIBUTE = []
 
 /**
@@ -309,6 +310,8 @@ function addSchemaAttributes(_id, schema_attribute) {
   if (schema_attribute === 'Owner_Checksum') {
     return `<div class="form-check form-switch"><input disabled class="form-check-input" type="checkbox" id="sca_${_id}"><label class="form-check-label" for="sca_${_id}">${schema_attribute}
     <span class="badge rounded-pill bg-secondary text-light" style="text-transform: uppercase">Prediction: Issuer is</span> <img src="/img/db_logo.png" width="30"></label></div>`
+  } else if (schema_attribute === 'Maintenance_Order') {
+    return ""
   }
   return `<div class="form-check form-switch"><input class="form-check-input" type="checkbox" id="sca_${_id}" checked><label class="form-check-label" for="sca_${_id}">${schema_attribute}</label></div>`
 }
@@ -316,7 +319,7 @@ function addSchemaAttributes(_id, schema_attribute) {
  * Read Schema Attributes from Leder
  * @param {*} schemaID 
  */
-function readSchema(schemaID) {
+function readSchema(schemaID, credDefID) {
 
   let html_schema_attributes = document.getElementById("schema_attributes")
   html_schema_attributes.innerHTML = ''
@@ -341,6 +344,7 @@ function readSchema(schemaID) {
 
      // Set Global Parameter
     ST_SCHEMA_ID = schemaID
+    ST_CRED_DEF_ID = credDefID
     
     red_spinner.style.visibility = "hidden"
     
@@ -422,14 +426,17 @@ function initProofRequest() {
     sessionStorage.clear()
     sessionStorage.setItem("ST_CONN", ST_CONNECTION)
     sessionStorage.setItem("ST_SCHM", ST_SCHEMA_ID)
+    sessionStorage.setItem("ST_CRED", ST_CRED_DEF_ID)
     sessionStorage.setItem("ST_ATTR", ST_ATTRIBUTE)
 
-    console.log("SEL CONNECTION..: ", ST_CONNECTION)
-    console.log("SEL SCHEMA......: ", ST_SCHEMA_ID)
-    console.log("SEL ATTRIBUTES..: ", ST_ATTRIBUTE)
+    console.log("SEL CONNECTION..........: ", ST_CONNECTION)
+    console.log("SEL SCHEMA..............: ", ST_SCHEMA_ID)
+    console.log("SEL CREDENTIOAL DEF ID..: ", ST_CRED_DEF_ID)
+    console.log("SEL ATTRIBUTES..........: ", ST_ATTRIBUTE)
 
     ST_CONNECTION = ''
     ST_SCHEMA_ID = ''
+    ST_CRED_DEF_ID = ''
     ST_ATTRIBUTE = ''
 
     // PARAMETER READY. PROCEED TO PROOF REQUEST
@@ -464,30 +471,64 @@ function addReqAttribute(single_attribute, cred_def) {
  */
 function setUpPRJSON(st_connection_id, st_attributes, cred_def) {
 
-  let payload_set = {
-    comment: "RailChain - Maintenance Demonstration",
-    connection_id: st_connection_id,
-      proof_request: {
-        name: "RailChain - Proof Request",
-        version: "1.0",
-        nonce: "1",
-        requested_attributes: {
-          
-        },
-      requested_predicates: {
-        Owner_Checksum: {
-          name: "Owner_Checksum",
-          p_type: "<=",
-          p_value: 999,
-          restrictions: [
-            {
-              cred_def_id: cred_def
-            }
-          ]
+  let payload_set = ''
+
+  //HOTFIX: Special Request Predicion for Schema
+  if (cred_def === 'Q49cJNv53MY5tnRh855m7L:3:CL:6271:Version 1.0') {
+
+    payload_set = {
+      comment: "RailChain - Maintenance Demonstration",
+      connection_id: st_connection_id,
+        proof_request: {
+          name: "RailChain - Proof Request",
+          version: "1.0",
+          nonce: "1",
+          requested_attributes: {
+            
+          },
+        requested_predicates: {
+          Owner_Checksum: {
+            name: "Maintenance_Order",
+            p_type: "<=",
+            p_value: 999,
+            restrictions: [
+              {
+                cred_def_id: cred_def
+              }
+            ]
+          }
+        }
+      }
+    }
+
+  } else {
+
+    payload_set = {
+      comment: "RailChain - Maintenance Demonstration",
+      connection_id: st_connection_id,
+        proof_request: {
+          name: "RailChain - Proof Request",
+          version: "1.0",
+          nonce: "1",
+          requested_attributes: {
+            
+          },
+        requested_predicates: {
+          Owner_Checksum: {
+            name: "Owner_Checksum",
+            p_type: "<=",
+            p_value: 999,
+            restrictions: [
+              {
+                cred_def_id: cred_def
+              }
+            ]
+          }
         }
       }
     }
   }
+
 
   // ADD PROOF REQUEST ATTRIBUTES
   for (let index = 0; index < st_attributes.length; index++) {
@@ -534,6 +575,7 @@ function runProofRequest() {
 
   let local_st_connection = sessionStorage.getItem("ST_CONN")
   let local_st_schema_id =  sessionStorage.getItem("ST_SCHM")
+  let local_st_cred_defi =  sessionStorage.getItem("ST_CRED")
   let local_st_attribute =  sessionStorage.getItem("ST_ATTR").split(",")
   sessionStorage.clear()
 
@@ -566,8 +608,8 @@ function runProofRequest() {
      * You cannot use your own one for this purpose.
      */
 
-    let cred_def_id = jsonData.credential_definition_id
-    cred_def_id = "Q49cJNv53MY5tnRh855m7L:3:CL:6270:Version 1.0" // HOTFIX
+    //let cred_def_id = jsonData.credential_definition_id
+    cred_def_id = local_st_cred_defi // HOTFIX
 
     console.log("CREDENTIAL DEFINITION ID..:", cred_def_id)
 
