@@ -235,25 +235,28 @@ app.get("/present-proof-record/:presentation_exchange_id", function (req, res) {
 // Get Credentil Definition from Ledger, if new create one
 app.post("/cred-def/", function (req, res) {
 
-    let credential_definition_payload = req.body.credential_definition_payload
+    //HOTFIX
+    res.status(200).send('HOTFIX')
 
-    console.log("GET CREDENTIAL DEFINITION: ", credential_definition_payload)
+    // let credential_definition_payload = req.body.credential_definition_payload
 
-    const AXIOS_POST_CONFIG = {
-        method: 'post',
-        url: process.env.API_CONTROLLER + "/credential-definitions",
-        headers:{ 'Content-Type': 'application/json',  'X-API-Key': process.env.API_CONTROLLER_KEY },
-        data: credential_definition_payload
-    }
+    // console.log("GET CREDENTIAL DEFINITION: ", credential_definition_payload)
 
-    axios(AXIOS_POST_CONFIG)
-    .then(result => {
-        console.log(result.data);
-        res.status(200).send(result.data)
-    })
-    .catch(err => {
-        console.log(err)
-        res.status(500).send(err.message)
-    })
+    // const AXIOS_POST_CONFIG = {
+    //     method: 'post',
+    //     url: process.env.API_CONTROLLER + "/credential-definitions",
+    //     headers:{ 'Content-Type': 'application/json',  'X-API-Key': process.env.API_CONTROLLER_KEY },
+    //     data: credential_definition_payload
+    // }
+
+    // axios(AXIOS_POST_CONFIG)
+    // .then(result => {
+    //     console.log(result.data);
+    //     res.status(200).send(result.data)
+    // })
+    // .catch(err => {
+    //     console.log(err)
+    //     res.status(500).send(err.message)
+    // })
 
 })

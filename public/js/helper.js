@@ -319,7 +319,28 @@ function addSchemaAttributes(_id, schema_attribute) {
  * Read Schema Attributes from Leder
  * @param {*} schemaID 
  */
-function readSchema(schemaID, credDefID) {
+function readSchema(schema_selection) {
+
+  // HOTFIX
+  let schemaID = ''
+  let credDefID = ''
+
+  switch (schema_selection) {
+    case 1:
+      schemaID = '3VnmobY6bh1TD17TunE9D7:2:RailChain_Maintenance_Auth:1.0'
+      credDefID = '3VnmobY6bh1TD17TunE9D7:3:CL:6270:0.4513092353260475'
+      break
+
+    case 2:
+      schemaID = '3VnmobY6bh1TD17TunE9D7:2:RailChain_Maintenance:1.0'
+      credDefID = 'Q49cJNv53MY5tnRh855m7L:3:CL:6271:Version 1.1'
+      break
+  
+    default:
+      schemaID = ''
+      credDefID = ''
+      break
+  }
 
   let html_schema_attributes = document.getElementById("schema_attributes")
   html_schema_attributes.innerHTML = ''
@@ -474,7 +495,7 @@ function setUpPRJSON(st_connection_id, st_attributes, cred_def) {
   let payload_set = ''
 
   //HOTFIX: Special Request Predicion for Schema
-  if (cred_def === 'Q49cJNv53MY5tnRh855m7L:3:CL:6271:Version 1.0') {
+  if (cred_def === 'Q49cJNv53MY5tnRh855m7L:3:CL:6271:Version 1.1') {
 
     payload_set = {
       comment: "RailChain - Maintenance Demonstration",
@@ -599,7 +620,8 @@ function runProofRequest() {
     method: "POST",
     body: JSON.stringify({ credential_definition_payload: setUpCredentialDefinitionJSON(local_st_schema_id) })
   }
-  fetch(`/cred-def/`, post_data_cd).then( res => res.json()).then( jsonData => {
+  fetch(`/cred-def/`, post_data_cd).then( res => {
+  //fetch(`/cred-def/`, post_data_cd).then( res => res.json()).then( jsonData => {
     
     // ###### Credential Definition ID ######
     /**
